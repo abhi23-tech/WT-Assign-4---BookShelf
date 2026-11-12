@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookShelf — Book Management System</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              900: '#4c1d95',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/25">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="text-xl font-bold bg-gradient-to-r from-brand-700 to-indigo-600 bg-clip-text text-transparent">BookShelf</span>
+          <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">REST API Connected</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="openAddModalBtn" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-brand-600 text-white shadow-sm hover:bg-brand-700 transition-all hover:shadow-md hover:shadow-brand-500/20 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Add Book
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Metrics Cards -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <!-- Total Books -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Titles</p>
+          <h3 id="statTotalBooks" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-violet-50 text-brand-600 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Total Quantity -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Copies</p>
+          <h3 id="statTotalStock" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Inventory Value -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventory Value</p>
+          <h3 id="statTotalValue" class="text-2xl font-bold text-slate-900 mt-1">$0.00</h3>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Categories Count -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Categories</p>
+          <h3 id="statCategories" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters & Search Toolbar -->
+    <section class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search by title or author..."
+          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm placeholder:text-slate-400"
+        />
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Category Filter -->
+        <select
+          id="categoryFilter"
+          class="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+        >
+          <option value="">All Categories</option>
+        </select>
+
+        <!-- Refresh Button -->
+        <button
+          id="refreshBtn"
+          title="Refresh Data"
+          class="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+        >
+          <svg id="refreshIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </button>
+
+        <!-- View Mode Toggle -->
+        <div class="hidden sm:flex border border-slate-200 rounded-xl overflow-hidden p-0.5 bg-slate-100">
+          <button id="viewGridBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-800 shadow-sm transition-all">Grid</button>
+          <button id="viewTableBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">Table</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Books Display Area -->
+    <section>
+      <!-- Loading State -->
+      <div id="loadingState" class="py-20 flex flex-col items-center justify-center text-slate-400">
+        <svg class="animate-spin w-8 h-8 text-brand-600 mb-3" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <p class="text-sm font-medium">Loading books from database...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-center p-8">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-bold text-slate-800">No books found</h4>
+        <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Start building your library catalog by adding your first book.</p>
+        <button id="emptyAddBtn" class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Add Your First Book
+        </button>
+      </div>
+
+      <!-- Grid View Container -->
+      <div id="booksGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+      <!-- Table View Container -->
+      <div id="booksTableWrapper" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-600 text-xs uppercase font-semibold border-b border-slate-200">
+              <tr>
+                <th class="px-6 py-4">Title & Author</th>
+                <th class="px-6 py-4">Category</th>
+                <th class="px-6 py-4">Price</th>
+                <th class="px-6 py-4">Stock</th>
+                <th class="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="booksTableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Add / Edit Book Modal -->
+  <div id="bookModal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- Modal Dialog -->
+    <div class="fixed inset-0 z-10 overflow-y-auto flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 transform transition-all overflow-hidden">
+        
+        <!-- Modal Header -->
+        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+          <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Add New Book</h3>
+          <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Form -->
+        <form id="bookForm" class="p-6 space-y-4">
+          <input type="hidden" id="bookId" />
+
+          <!-- Title -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5" for="formTitle">
+              Book Title <span class="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="formTitle"
+              required
+              placeholder="e.g. Clean Code"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
+            />
+          </div>
+
+          <!-- Author -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5" for="formAuthor">
+              Author Name <span class="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="formAuthor"
+              required
+              placeholder="e.g. Robert C. Martin"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
+            />
+          </div>
+
+          <!-- Category -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5" for="formCategory">
+              Category / Genre <span class="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="formCategory"
+              required
+              list="categorySuggestions"
+              placeholder="e.g. Software Engineering"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
+            />
+            <datalist id="categorySuggestions">
+              <option value="Software Engineering"></option>
+              <option value="Computer Science"></option>
+              <option value="Fiction"></option>
+              <option value="Non-Fiction"></option>
+              <option value="Science"></option>
+              <option value="Business"></option>
+              <option value="Design"></option>
+            </datalist>
+          </div>
+
+          <!-- Price & Quantity (2 columns) -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5" for="formPrice">
+                Price ($) <span class="text-rose-500">*</span>
+              </label>
+              <input
+                type="number"
+                id="formPrice"
+                step="0.01"
+                min="0"
+                required
+                placeholder="29.99"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5" for="formQuantity">
+                Quantity <span class="text-rose-500">*</span>
+              </label>
+              <input
+                type="number"
+                id="formQuantity"
+                step="1"
+                min="0"
+                required
+                placeholder="10"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Modal Footer / Buttons -->
+          <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+            <button
+              type="button"
+              id="cancelModalBtn"
+              class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              id="saveBookBtn"
+              class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-600 text-white hover:bg-brand-700 shadow-sm transition-all"
+            >
+              Save Book
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+    <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center space-y-4">
+        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold text-slate-900">Delete Book?</h4>
+          <p id="deleteBookTitle" class="text-sm text-slate-500 mt-1 font-medium">Are you sure you want to remove this book?</p>
+          <p class="text-xs text-rose-500 mt-1">This action cannot be undone.</p>
+        </div>
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <button id="cancelDeleteBtn" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
+          <button id="confirmDeleteBtn" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700 shadow-sm transition-colors">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+      <p>Book Management System &bull; Node.js + Express + MongoDB Atlas</p>
+      <p class="text-slate-400">REST API available at <code class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">/api/books</code></p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,11 +1,12 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const bookRoutes = require('./routes/bookRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
-// Connect to MongoDB Atlas
+// Connect to Database
 connectDB();
 
 const app = express();
@@ -15,8 +16,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Root / Health check route
-app.get('/', (req, res) => {
+// Serve static frontend files from 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API Health check route
+app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Book Management REST API is running!',
@@ -43,3 +47,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });
+
