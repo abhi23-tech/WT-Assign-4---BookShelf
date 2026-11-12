@@ -159,7 +159,7 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
     "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
     "author": "Robert C. Martin",
     "category": "Software Engineering",
-    "price": 34.99,
+    "price": 599.00,
     "quantity": 15
   }
   ```
@@ -174,7 +174,7 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
       "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
       "author": "Robert C. Martin",
       "category": "Software Engineering",
-      "price": 34.99,
+      "price": 599.00,
       "quantity": 15,
       "createdAt": "2026-11-12T15:00:00.000Z",
       "updatedAt": "2026-11-12T15:00:00.000Z",
@@ -200,7 +200,7 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
         "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
         "author": "Robert C. Martin",
         "category": "Software Engineering",
-        "price": 34.99,
+        "price": 599.00,
         "quantity": 15,
         "createdAt": "2026-11-12T15:00:00.000Z",
         "updatedAt": "2026-11-12T15:00:00.000Z"
@@ -226,7 +226,7 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
       "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
       "author": "Robert C. Martin",
       "category": "Software Engineering",
-      "price": 34.99,
+      "price": 599.00,
       "quantity": 15
     }
   }
@@ -241,7 +241,7 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
 - **Body** (`raw` JSON):
   ```json
   {
-    "price": 29.99,
+    "price": 499.00,
     "quantity": 25
   }
   ```
@@ -256,7 +256,7 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
       "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
       "author": "Robert C. Martin",
       "category": "Software Engineering",
-      "price": 29.99,
+      "price": 499.00,
       "quantity": 25,
       "updatedAt": "2026-11-12T15:05:00.000Z"
     }

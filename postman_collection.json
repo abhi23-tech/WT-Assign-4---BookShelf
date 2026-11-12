@@ -59,7 +59,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Clean Code: A Handbook of Agile Software Craftsmanship\",\n  \"author\": \"Robert C. Martin\",\n  \"category\": \"Software Engineering\",\n  \"price\": 34.99,\n  \"quantity\": 15\n}"
+          "raw": "{\n  \"title\": \"Clean Code: A Handbook of Agile Software Craftsmanship\",\n  \"author\": \"Robert C. Martin\",\n  \"category\": \"Software Engineering\",\n  \"price\": 599.00,\n  \"quantity\": 15\n}"
         },
         "url": {
           "raw": "{{base_url}}/api/books",
@@ -82,7 +82,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"The Pragmatic Programmer\",\n  \"author\": \"Andrew Hunt, David Thomas\",\n  \"category\": \"Software Engineering\",\n  \"price\": 42.50,\n  \"quantity\": 8\n}"
+          "raw": "{\n  \"title\": \"The Pragmatic Programmer\",\n  \"author\": \"Andrew Hunt, David Thomas\",\n  \"category\": \"Software Engineering\",\n  \"price\": 749.00,\n  \"quantity\": 8\n}"
         },
         "url": {
           "raw": "{{base_url}}/api/books",
@@ -153,7 +153,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"price\": 29.99,\n  \"quantity\": 25\n}"
+          "raw": "{\n  \"price\": 499.00,\n  \"quantity\": 25\n}"
         },
         "url": {
           "raw": "{{base_url}}/api/books/{{book_id}}",

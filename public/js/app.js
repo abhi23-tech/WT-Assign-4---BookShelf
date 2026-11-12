@@ -129,7 +129,7 @@ function updateMetrics(books) {
 
   statTotalBooks.textContent = totalBooks.toLocaleString();
   statTotalStock.textContent = totalStock.toLocaleString();
-  statTotalValue.textContent = `$${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  statTotalValue.textContent = `₹${totalValue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   statCategories.textContent = uniqueCategories;
 }
 
@@ -218,7 +218,7 @@ function renderGrid(books) {
           <div class="mt-auto pt-4 flex items-baseline justify-between border-t border-slate-100">
             <div>
               <span class="text-xs text-slate-400 font-medium">Price</span>
-              <p class="text-xl font-extrabold text-slate-900">$${Number(book.price).toFixed(2)}</p>
+              <p class="text-xl font-extrabold text-slate-900">₹${Number(book.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
             <div class="flex items-center gap-1">
               <button 
@@ -263,7 +263,7 @@ function renderTable(books) {
           </span>
         </td>
         <td class="px-6 py-4 font-bold text-slate-900">
-          $${Number(book.price).toFixed(2)}
+          ₹${Number(book.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </td>
         <td class="px-6 py-4">
           <span class="text-xs font-semibold ${book.quantity > 0 ? 'text-emerald-700' : 'text-rose-700'}">
@@ -461,3 +461,4 @@ window.openDeleteModal = openDeleteModal;
 
 // Initial Load
 fetchBooks();
+
