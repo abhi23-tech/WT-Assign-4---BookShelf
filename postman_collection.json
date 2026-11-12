@@ -1,0 +1,233 @@
+{
+  "info": {
+    "_postman_id": "b3e0c7a5-7164-4e9b-a329-847291fa1208",
+    "name": "Book Management API",
+    "description": "Postman Collection for Book Management REST API built with Node.js, Express, and MongoDB Atlas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "book_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health Check / Root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        },
+        "description": "Check if API server is alive"
+      },
+      "response": []
+    },
+    {
+      "name": "1. POST - Add New Book",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData && jsonData.data && jsonData.data._id) {",
+              "    pm.collectionVariables.set('book_id', jsonData.data._id);",
+              "    console.log('book_id auto-saved:', jsonData.data._id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Clean Code: A Handbook of Agile Software Craftsmanship\",\n  \"author\": \"Robert C. Martin\",\n  \"category\": \"Software Engineering\",\n  \"price\": 34.99,\n  \"quantity\": 15\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/books",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books"]
+        },
+        "description": "Add a new book. Automatically sets {{book_id}} for subsequent requests."
+      },
+      "response": []
+    },
+    {
+      "name": "2. POST - Add Another Book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"The Pragmatic Programmer\",\n  \"author\": \"Andrew Hunt, David Thomas\",\n  \"category\": \"Software Engineering\",\n  \"price\": 42.50,\n  \"quantity\": 8\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/books",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books"]
+        },
+        "description": "Add another sample book"
+      },
+      "response": []
+    },
+    {
+      "name": "3. GET - Retrieve All Books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/books",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books"]
+        },
+        "description": "Retrieve all books from the database"
+      },
+      "response": []
+    },
+    {
+      "name": "4. GET - Search / Filter Books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/books?category=Software Engineering",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books"],
+          "query": [
+            {
+              "key": "category",
+              "value": "Software Engineering"
+            }
+          ]
+        },
+        "description": "Filter books by category, author, or search keyword"
+      },
+      "response": []
+    },
+    {
+      "name": "5. GET - Retrieve Book by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/books/{{book_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books", "{{book_id}}"]
+        },
+        "description": "Retrieve a single book using its MongoDB ObjectId"
+      },
+      "response": []
+    },
+    {
+      "name": "6. PUT - Update Book Details",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 29.99,\n  \"quantity\": 25\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/books/{{book_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books", "{{book_id}}"]
+        },
+        "description": "Update price and quantity (or any other field) of an existing book"
+      },
+      "response": []
+    },
+    {
+      "name": "7. DELETE - Remove Book by ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/books/{{book_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books", "{{book_id}}"]
+        },
+        "description": "Delete a book by its MongoDB ObjectId"
+      },
+      "response": []
+    },
+    {
+      "name": "8. Test Error - Missing Required Fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Only Title\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/books",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books"]
+        },
+        "description": "Expects 400 Bad Request because fields are missing"
+      },
+      "response": []
+    },
+    {
+      "name": "9. Test Error - Invalid ID Format",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/books/invalid-id-123",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books", "invalid-id-123"]
+        },
+        "description": "Expects 400 Bad Request due to invalid MongoDB ObjectId format"
+      },
+      "response": []
+    },
+    {
+      "name": "10. Test Error - Non-Existent Book ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/books/60d5ec49c69f5c001f3f1e99",
+          "host": ["{{base_url}}"],
+          "path": ["api", "books", "60d5ec49c69f5c001f3f1e99"]
+        },
+        "description": "Expects 404 Not Found because the ID does not exist in the database"
+      },
+      "response": []
+    }
+  ]
+}
