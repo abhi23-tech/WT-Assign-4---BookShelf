@@ -31,6 +31,10 @@ A clean, production-ready Book Management REST API built with **Node.js**, **Exp
 │   └── errorHandler.js       # 404 and centralized error handler
 ├── models/
 │   └── Book.js               # Mongoose schema for Book entity
+├── public/
+│   ├── css/style.css         # Modern styling & animations
+│   ├── js/app.js             # Client SPA logic for CRUD & UI reactivity
+│   └── index.html            # Web dashboard UI
 ├── routes/
 │   └── bookRoutes.js         # REST route definitions
 ├── .env                      # Local environment variables (Ignored in Git)
@@ -343,3 +347,4 @@ MongoDB Connected: cluster0-shard-00-00.mongodb.net
 
 ## 📜 License
 ISC License. Feel free to use and adapt this project for educational and assignment purposes.
+
